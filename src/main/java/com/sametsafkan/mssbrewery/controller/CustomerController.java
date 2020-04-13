@@ -7,10 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/v1/customer")
@@ -28,7 +31,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody Customer customer){
+    public ResponseEntity save(@Valid @RequestBody Customer customer){
         Customer saved = service.save(customer);
         HttpHeaders headers = new HttpHeaders();
         //TODO: add hostname to location
@@ -37,7 +40,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity update(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer){
+    public ResponseEntity update(@PathVariable("customerId") UUID customerId, @Valid @RequestBody Customer customer){
         service.update(customerId, customer);
         return new ResponseEntity(NO_CONTENT);
     }
@@ -45,5 +48,13 @@ public class CustomerController {
     @DeleteMapping("/{customerId}")
     public void delete(@PathVariable("customerId") UUID customerId){
         service.delete(customerId);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<List> handleConstraintErrors(ConstraintViolationException e){
+        List<String> errors = e.getConstraintViolations().stream()
+                                .map(ex -> ex.getPropertyPath() + " - " + ex.getMessage())
+                                .collect(Collectors.toList());
+        return new ResponseEntity<>(errors, BAD_REQUEST);
     }
 }
