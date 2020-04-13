@@ -2,6 +2,7 @@ package com.sametsafkan.mssbrewery.controller;
 
 import com.sametsafkan.mssbrewery.dto.BeerDto;
 import com.sametsafkan.mssbrewery.service.BeerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,10 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/v1/beer")
+@RequiredArgsConstructor
 public class BeerController {
 
     private final BeerService beerService;
-
-    public BeerController(BeerService beerService) {
-        this.beerService = beerService;
-    }
 
     @RequestMapping("/{beerId}")
     public ResponseEntity<BeerDto> findById(@PathVariable("beerId") String beerId){

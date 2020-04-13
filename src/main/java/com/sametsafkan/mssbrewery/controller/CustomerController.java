@@ -2,6 +2,7 @@ package com.sametsafkan.mssbrewery.controller;
 
 import com.sametsafkan.mssbrewery.dto.Customer;
 import com.sametsafkan.mssbrewery.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,10 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/v1/customer")
+@RequiredArgsConstructor
 public class CustomerController {
 
     private final CustomerService service;
-
-    public CustomerController(CustomerService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> findById(@PathVariable("id") UUID id){
