@@ -49,12 +49,4 @@ public class CustomerController {
     public void delete(@PathVariable("customerId") UUID customerId){
         service.delete(customerId);
     }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<List> handleConstraintErrors(ConstraintViolationException e){
-        List<String> errors = e.getConstraintViolations().stream()
-                                .map(ex -> ex.getPropertyPath() + " - " + ex.getMessage())
-                                .collect(Collectors.toList());
-        return new ResponseEntity<>(errors, BAD_REQUEST);
-    }
 }
