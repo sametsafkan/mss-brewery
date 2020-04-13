@@ -7,8 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -37,13 +41,22 @@ public class BeerController {
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity update(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDto beerDto){
+    @ResponseStatus(NO_CONTENT)
+    public void update(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDto beerDto){
         beerService.update(beerId, beerDto);
-        return new ResponseEntity(NO_CONTENT);
     }
 
     @DeleteMapping("/{beerId}")
     public void delete(@PathVariable("beerId") UUID beerId){
         beerService.delete(beerId);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<List> validationErrorHandler(ConstraintViolationException e){
+        List<String> errors = e.getConstraintViolations().stream()
+                                    .map(ex -> ex.getPropertyPath() + ex.getMessage())
+                                    .collect(Collectors.toList());
+        return new ResponseEntity<>(errors, BAD_REQUEST);
+
     }
 }
