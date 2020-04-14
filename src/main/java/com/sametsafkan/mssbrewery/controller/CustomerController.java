@@ -1,6 +1,6 @@
 package com.sametsafkan.mssbrewery.controller;
 
-import com.sametsafkan.mssbrewery.dto.Customer;
+import com.sametsafkan.mssbrewery.dto.CustomerDto;
 import com.sametsafkan.mssbrewery.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -8,11 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,13 +21,13 @@ public class CustomerController {
     private final CustomerService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> findById(@PathVariable("id") UUID id){
+    public ResponseEntity<CustomerDto> findById(@PathVariable("id") UUID id){
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity save(@Valid @RequestBody Customer customer){
-        Customer saved = service.save(customer);
+    public ResponseEntity save(@Valid @RequestBody CustomerDto customer){
+        CustomerDto saved = service.save(customer);
         HttpHeaders headers = new HttpHeaders();
         //TODO: add hostname to location
         headers.add("Location", "/mss/v1/customer" + saved.getId().toString());
@@ -38,7 +35,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity update(@PathVariable("customerId") UUID customerId, @Valid @RequestBody Customer customer){
+    public ResponseEntity update(@PathVariable("customerId") UUID customerId, @Valid @RequestBody CustomerDto customer){
         service.update(customerId, customer);
         return new ResponseEntity(NO_CONTENT);
     }

@@ -5,20 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class Beer {
+public class Customer {
     private UUID id;
     private String name;
-    private String style;
-    private Long upc;
-
-    private Timestamp createdDate;
-    private Timestamp lastUpdatedDate;
 }

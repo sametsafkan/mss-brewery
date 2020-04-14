@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Customer {
+public class CustomerDto {
     private UUID id;
     @NotBlank
     @Size(min = 3, max = 100)
